@@ -1,0 +1,5 @@
+Name,Criteria,Action,StopOnSuccess
+"Red is cheap","I.Color==""red""","O.Discount=30",true
+"Too much blue","I.Color==""blue"" && I.Quantity > 10","O.Discount=50",true
+"Special model","I.Model==""retro""","O.Discount=10",true
+"Nothing special","true","O.Discount=0",true

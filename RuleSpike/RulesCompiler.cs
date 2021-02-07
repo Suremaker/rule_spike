@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Data;
+using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Microsoft.CodeAnalysis.CSharp.Scripting;
 using Microsoft.CodeAnalysis.Scripting;
 
@@ -9,7 +8,10 @@ namespace RuleSpike
 {
     public class RulesCompiler
     {
-        public RuleSet<TInput, TOutput> Compile<TInput, TOutput>(params RuleDefinition[] definitions)
+        public RuleSet<TInput, TOutput> Compile<TInput, TOutput>(params RuleDefinition[] definitions) =>
+            Compile<TInput, TOutput>((IReadOnlyList<RuleDefinition>)definitions);
+
+        public RuleSet<TInput, TOutput> Compile<TInput, TOutput>(IReadOnlyList<RuleDefinition> definitions)
         {
             var script = CSharpScript.Create<bool>("",
                 ScriptOptions.Default.WithReferences(typeof(TInput).Assembly, typeof(TOutput).Assembly),

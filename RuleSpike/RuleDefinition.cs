@@ -1,7 +1,12 @@
-﻿namespace RuleSpike
+﻿using System.Text.Json.Serialization;
+
+namespace RuleSpike
 {
     public class RuleDefinition
     {
+        public RuleDefinition()
+        {
+        }
         public RuleDefinition(string name, string criteria, string action, bool stopOnSuccess = true)
         {
             Name = name;
@@ -10,9 +15,9 @@
             StopOnSuccess = stopOnSuccess;
         }
 
-        public string Name { get; }
-        public string Criteria { get; }
-        public string Action { get; }
-        public bool StopOnSuccess { get; }
+        public string Name { get; set; }
+        public string Criteria { get; set; }
+        public string Action { get; set; }
+        public bool StopOnSuccess { get; set; }
     }
 }
