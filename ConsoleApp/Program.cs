@@ -11,13 +11,17 @@ namespace ConsoleApp
     {
         static async Task Main(string[] args)
         {
+            var sw = Stopwatch.StartNew();
             var compiler = new RulesCompiler();
+
             var rules = compiler.Compile<Order, Discounts>(
                 new RuleDefinition("Red is cheap", "I.Color==\"red\"", "O.Discount=30"),
                 new RuleDefinition("Too much blue", "I.Color==\"blue\" && I.Quantity > 10", "O.Discount=50"),
                 new RuleDefinition("Special model", "I.Model==\"retro\"", "O.Discount=10"),
                 new RuleDefinition("Nothing special", "true", "O.Discount=0")
                 );
+
+            Console.WriteLine($"Compiled after: {sw.ElapsedMilliseconds}ms");
 
             var orders = new[]
             {
@@ -33,7 +37,7 @@ namespace ConsoleApp
                 Console.WriteLine($"Running: {order}");
                 var discounts = new Discounts();
 
-                await rules.Invoke(order, discounts);
+                await rules.Evaluate(order, discounts, true);
                 Console.WriteLine($"Discount is: {discounts.Discount}");
                 Console.WriteLine();
             }
@@ -43,12 +47,12 @@ namespace ConsoleApp
             await MeasureTime(orders, rules);
         }
 
-        private static async Task MeasureTime(Order[] orders, Func<Order, Discounts, Task> rules)
+        private static async Task MeasureTime(Order[] orders, RuleSet<Order, Discounts> rules)
         {
             var sw = Stopwatch.StartNew();
             var total = Enumerable.Range(0, 10000).SelectMany(x => orders).ToArray();
             foreach (var o in total)
-                await rules.Invoke(o, new Discounts());
+                await rules.Evaluate(o, new Discounts());
             sw.Stop();
 
             Console.WriteLine($"Total time for {total.Length}: {sw.Elapsed}; Single run: {sw.Elapsed / total.Length}");
